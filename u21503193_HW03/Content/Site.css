@@ -1,0 +1,140 @@
+﻿/* Set padding to keep content from hitting the edges */
+.body-content {
+    margin-top: 15px;
+    padding-left: 15px;
+    padding-right: 15px;
+}
+
+/* Override the default bootstrap behavior where horizontal description lists 
+   will truncate terms that are too long to fit in the left column 
+*/
+.dl-horizontal dt {
+    white-space: normal;
+}
+
+/* Set width on the form input elements since they're 100% wide by default */
+input,
+select,
+textarea {
+    max-width: 280px;
+}
+/*//////////////////////////////////////////////////////////////////////////////////////////////*/
+
+
+.navbar {
+    background-color: #007BFF; /* Background color */
+}
+
+.navbar-brand {
+    color: #FFF; /* Text color for the brand */
+    font-weight: bold;
+}
+
+.navbar-toggler-icon {
+    background-color: #FFF; /* Color of the toggler icon */
+}
+
+.nav-link {
+    color: #FFF; /* Text color for navigation links */
+    margin: 0 10px; /* Adjust the spacing between links */
+    font-weight: bold;
+}
+
+    /* Hover effect for navigation links */
+    .nav-link:hover {
+        text-decoration: none;
+        color: #FFD700; /* Change the color when hovering */
+    }
+
+    /* Active link styling */
+    .nav-link.active {
+        background-color: #0056b3; /* Background color for the active link */
+        border-radius: 5px; /* Add some rounded corners */
+    }
+/*////////////////////////////////////////////////////////////////////////////////////////////*/
+
+/* Reset some default styles for consistency */
+body, h1, h2, h3, p {
+    margin: 0;
+    padding: 0;
+}
+
+/* Set a background color for the entire page */
+body {
+    background-color: #f0f0f0;
+    font-family: Arial, sans-serif;
+}
+
+/* Style for the page header */
+.header {
+    background-color: #007bff;
+    color: #fff;
+    text-align: center;
+    padding: 20px 0;
+}
+
+/* Style for the welcome message and website purpose */
+.welcome-message {
+    text-align: center;
+    padding: 20px;
+    font-size: 18px;
+}
+
+/* Style for the "Students" and "Books" sections */
+.section {
+    background-color: #fff;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    padding: 20px;
+    margin: 10px 0;
+}
+
+/* Style for the "Create" button */
+.create-link, .edit-link, .details-link, .delete-link {
+    background-color: #007bff;
+    color: #fff;
+    text-decoration: none;
+    padding: 5px 10px;
+    border-radius: 5px;
+}
+
+/* Style for the table headers */
+.table thead th {
+    background-color: #007bff;
+    color: #fff;
+}
+
+/* Style for the table rows */
+.table tbody tr:nth-child(even) {
+    background-color: #f2f2f2;
+}
+
+/* Style for pagination links */
+.pagination {
+    margin: 0;
+    text-align: center;
+}
+
+    .pagination li {
+        display: inline-block;
+        margin: 0 5px;
+    }
+
+    .pagination a {
+        text-decoration: none;
+        background-color: #007bff;
+        color: #fff;
+        padding: 5px 10px;
+        border-radius: 5px;
+    }
+
+    .pagination .active a {
+        background-color: #333;
+    }
+
+/* Style for the modal */
+.modal-content {
+    background-color: #fff;
+    border-radius: 10px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.3);
+}

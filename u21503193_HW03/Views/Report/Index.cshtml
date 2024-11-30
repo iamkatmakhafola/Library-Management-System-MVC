@@ -1,0 +1,318 @@
+﻿@using u21503193_HW03.Models
+@model List<ReportModel>
+@using Newtonsoft.Json
+@{
+    ViewBag.Title = "Index";
+}
+
+<link href="~/Content/Report.css" rel="stylesheet" />
+<script src="~/Scripts/Viewer/fileViewer.js"></script>
+<script src="https://cdn.ckeditor.com/4.16.1/standard/ckeditor.js"></script>
+
+<div class="row">
+    <div class="header">
+        <h1 style="text-align:center">
+            Report on Top Borrowed Books
+        </h1>
+    </div>
+
+    <div class="col-md-12">
+        <h2>Introduction</h2>
+
+        <p>
+            This report presents an analysis of the most borrowed books within a library.
+            The analysis includes the use of both bar and pie charts to provide a comprehensive understanding of borrowing patterns and preferences among library patrons.
+            By visually representing the data, this report aims to shed light on the popularity of specific book titles and assist library management in making data-driven decisions.
+        </p>
+    </div>
+
+
+    <div class="col-md-12">
+        <h2>Data Source</h2>
+        <p>
+            The data used for this analysis is sourced from the library's records, which contain information on book borrowings. The dataset includes book IDs and the corresponding number of times each book has been borrowed.
+        </p>
+    </div>
+
+    <div class="col-md-6">
+        <h2>Overview</h2>
+        <p>
+            This report includes two types of charts: a bar chart and a pie chart. <br />
+            <ul>
+                <li>
+                    The bar chart provides a visual representation of the top borrowed books, showing the borrow counts for each book.
+                </li>
+                <li>
+                    The pie chart illustrates the distribution of borrow counts among these top books, indicating the proportion of each book's borrow count relative to the total.
+                </li>
+            </ul>
+        </p>
+    </div>
+
+    <div class="col-md-6">
+        <h2>Analysis and Insights</h2>
+        <p>
+            The insights gained from these charts can assist in optimizing the library's collection and understanding student preferences.
+            <ul>
+                <li>
+                    The bar chart highlights the borrow counts for each book, making it easy to identify the most popular titles.
+                </li>
+                <li>
+                    The pie chart, on the other hand, offers a clear distribution of borrow counts, emphasizing how each book contributes to the total.
+                </li>
+            </ul>
+        </p>
+    </div>
+
+    <div id="barchartContainer" class="col-md-6" style="background-color:ghostwhite">
+        <h3 style="text-align:center">Top Borrowed Books - Bar Chart</h3>
+        <canvas id="barChart" style="max-width:600px; max-height:300px"></canvas>
+    </div>
+
+    <div id="piechartContainer" class="col-md-6" style="background-color:ghostwhite">
+        <h3 style="text-align:center">Distribution of Borrow Counts - Pie Chart</h3>
+        <canvas id="pieChart" style="max-width:600px; max-height:300px"></canvas>
+    </div>
+
+    <div class="col-md-12">
+        <h2>Conclusion</h2>
+        <p>
+            In conclusion, the analysis of top borrowed books using both bar and pie charts provides valuable insights into the library's borrowing patterns.
+            It aids in identifying which books are in high demand and how each book contributes to the overall borrowing statistics.
+            This data-driven approach enhances the library's ability to meet the needs of its patrons and make informed decisions regarding its collection management.
+        </p>
+    </div>
+
+    <form action="/Report/GenerateReport" method="post" id="reportForm">
+        <div class="form-group">
+            <label for="filename">Filename:</label>
+            <input type="text" name="filename" id="filename" class="form-control" required>
+        </div>
+        <input type="hidden" name="fileType" value="pdf">
+        <button type="submit" class="btn btn-primary" onclick="generatePdf()">Save PDF Report</button>
+    </form>
+
+    <div class="col-md-12">
+        <h2>Archive</h2>
+
+        <button class="btn btn-primary" onclick="Archives()">View New Archive</button>
+
+        <div style="height: 400px; overflow: auto;">
+            <table class="table table-striped table-bordered" style="width:100%">
+                <thead class="bg-primary" style="color:white">
+                    <tr>
+                        <th width="75%">FILE NAME</th>
+                        <th>DESCRIPTION</th>
+                        <th>DOWNLOAD</th>
+                        <th>DELETE</th>
+                    </tr>
+                </thead>
+                @foreach (ReportModel file in Model)
+                {
+                    <tr>
+                        <td>@file.FileName</td>
+                        <td>
+                            <div id="description-@file.FileName">
+                                <textarea class="editor" id="editor-@file.FileName">@file.Description</textarea>
+                            </div>
+                        </td>
+                        <td class="t">@Html.ActionLink("Download", "DownloadFile", new { fileName = file.FileName }, new { @class = "btn btn-success btn-sm", style = "width: 150px;" })</td>
+                        <td class="t">@Html.ActionLink("Delete", "DeleteFile", new { fileName = file.FileName }, new { @class = "btn btn-danger btn-sm", style = "width: 150px;" })</td>
+                    </tr>
+
+
+                }
+            </table>
+        </div>
+
+    </div>
+</div>
+
+<script type="text/javascript">
+    $(function () {
+        $.ajax({
+            type: "POST",
+            url: "/Report/GetChartData",
+            data: "",
+            contentType: "application/json; charset=utf-8",
+            dataType: "json",
+            success: OnSuccessResult,
+            error: onerror
+        });
+
+        function getRandomColor() {
+            // Generate a random hex color code
+            return "#" + Math.floor(Math.random() * 16777215).toString(16);
+        }
+
+        function OnSuccessResult(data) {
+            var _data = data;
+            var _chartLabels = _data[0];
+            var _chartData = _data[1];
+
+            var barColor = _chartData.map(function () {
+                return getRandomColor();
+            });
+
+            new Chart("barChart", {
+                type: "bar",
+                data: {
+                    labels: _chartLabels,
+                    datasets: [{
+                        label: 'Borrow Count', // Legend label
+                        backgroundColor: barColor,
+                        data: _chartData
+                    }]
+                },
+                options: {
+                    title: {
+                        display: true,
+                        text: 'Top 10 Borrowed Books' // Chart title
+                    },
+                    legend: {
+                        display: true,
+                        position: 'right' // Legend position (top, bottom, left, right)
+                    }
+                }
+            });
+
+            var barChartCanvas = document.getElementById("barChart");
+            var barChartImage = barChartCanvas.toDataURL("image/png");
+            console.log("barChartImage:", barChartImage); // Log the barChartImage
+        }
+
+        function onerror(err) {
+            // Handle the error here
+        }
+    });
+</script>
+
+<script type="text/javascript">
+    $(function () {
+        $.ajax({
+            type: "POST",
+            url: "/Report/GetChartData",
+            data: "",
+            contentType: "application/json; charset=utf-8",
+            dataType: "json",
+            success: OnSuccessResult,
+            error: onerror
+        });
+
+        function OnSuccessResult(data) {
+            var _data = data;
+            var _chartLabels = _data[0];
+            var _chartData = _data[1];
+
+            var pieColors = _chartLabels.map(function () {
+                return getRandomColor();
+            });
+
+            new Chart("pieChart", {
+                type: "pie", // Set the chart type to 'pie'
+                data: {
+                    labels: _chartLabels,
+                    datasets: [{
+                        data: _chartData,
+                        backgroundColor: pieColors,
+                    }]
+                },
+                options: {
+                    title: {
+                        display: true,
+                        text: 'Distribution of Borrow Counts', // Chart title
+                    }
+                }
+            });
+
+            // Capture the pie chart as a base64 image
+            var pieChartCanvas = document.getElementById("pieChart");
+            var pieChartImage = pieChartCanvas.toDataURL("image/png");
+            console.log("barChartImage:", pieChartImage);
+        }
+
+        function getRandomColor() {
+            // Generate a random hex color code
+            return "#" + Math.floor(Math.random() * 16777215).toString(16);
+        }
+
+        function onerror(err) {
+            // Handle the error here
+        }
+    });
+</script>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/pdfmake/0.1.68/pdfmake.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/pdfmake/0.1.68/vfs_fonts.js"></script>
+
+<script>
+
+    pdfMake.fonts = {
+        Roboto: {
+            normal: 'https://cdnjs.cloudflare.com/ajax/libs/pdfmake/0.1.68/vfs_fonts/Roboto-Regular.ttf',
+            bold: 'https://cdnjs.cloudflare.com/ajax/libs/pdfmake/0.1.68/vfs_fonts/Roboto-Medium.ttf',
+            italics: 'https://cdnjs.cloudflare.com/ajax/libs/pdfmake/0.1.68/vfs_fonts/Roboto-Italic.ttf',
+            bolditalics: 'https://cdnjs.cloudflare.com/ajax/libs/pdfmake/0.1.68/vfs_fonts/Roboto-MediumItalic.ttf'
+        }
+    };
+</script>
+
+<script type="text/javascript">
+    function generatePdf() {
+        // Capture the chart images
+        var barChartCanvas = document.getElementById("barChart");
+        var pieChartCanvas = document.getElementById("pieChart");
+
+        // Check if the chart canvases exist and have valid data
+        if (barChartCanvas && pieChartCanvas) {
+            var barChartImage = barChartCanvas.toDataURL();
+            var pieChartImage = pieChartCanvas.toDataURL();
+
+            if (isBase64ImageNotEmpty(barChartImage) && isBase64ImageNotEmpty(pieChartImage)) {
+                // Send the data to the server using AJAX
+                $.ajax({
+                    type: "POST",
+                    url: "/Report/GenerateReport",
+                    data: {
+                        filename: $("#filename").val(),
+                        barChartImage: barChartImage,
+                        pieChartImage: pieChartImage
+                    },
+                    success: function (pdfBytes) {
+                        // Handle the success and download the PDF
+                        var blob = new Blob([pdfBytes], { type: 'application/pdf' });
+                        var link = document.createElement('a');
+                        link.href = window.URL.createObjectURL(blob);
+                        link.download = $("#filename").val() + ".pdf";
+                        link.click();
+                    },
+                    error: function () {
+                        // Handle the error here
+                    }
+                });
+            } else {
+                alert("Chart images are empty or invalid. Please generate the charts first.");
+            }
+        } else {
+            alert("Chart elements not found. Please ensure that the charts are generated.");
+        }
+    }
+
+    function isBase64ImageNotEmpty(base64Image) {
+        return base64Image && base64Image !== "data:,";
+    }
+</script>
+
+<script type="text/javascript">
+    // Function to reload the page
+    function Archives() {
+        location.reload(); // Reload the current page
+    }
+</script>
+
+<script>
+    // Initialize CKEditor for each description
+    $('.editor').each(function (index) {
+        CKEDITOR.replace('editor-' + this.id);
+    });
+</script>

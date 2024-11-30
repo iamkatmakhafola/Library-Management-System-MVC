@@ -1,0 +1,291 @@
+﻿@model u21503193_HW03.Models.CombinedHomeVM
+@{
+    ViewBag.Title = "Index";
+}
+
+<link href="~/Content/Site.css" rel="stylesheet" />
+
+<div class="row">
+
+    <div class="header">
+        <h1>Welcome to the Library Management System</h1>
+    </div>
+
+    <div class="welcome-message">
+        <p>This website allows you to manage students and books in the library. You can create, update, and delete student and book records, as well as view them in an organized manner.</p>
+    </div>
+
+    <div class="col-md-6">
+        <div class="section">
+            <div class="row">
+                <div class="col-md-6">
+                    <h2>Students</h2>
+                </div>
+                <div class="col-md-6" style="text-align:right">
+                    <a href="#" class="create-link btn btn-light btn-outline-primary" data-url="@Url.Action("Create", "students")">Create</a>
+                </div>
+            </div>
+
+            <table class="table table-striped table-bordered" style="width:100%">
+                <thead class="bg-primary" style="color:white">
+                    <tr>
+                        <th>
+                            Name
+                        </th>
+                        <th>
+                            Surname
+                        </th>
+                        <th>
+                            Birthdate
+                        </th>
+                        <th>
+                            Gender
+                        </th>
+                        <th>
+                        Class
+                        </th>
+                        <th>
+                            Point
+                        </th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var student in Model.Students)
+                    {
+                        <tr>
+                            <td>
+                                @student.name
+                            </td>
+                            <td>
+                                @student.surname
+                            </td>
+                            <td>
+                                @student.birthdate
+                            </td>
+                            <td>
+                                @student.gender
+                            </td>
+                            <td>
+                            @(student.@class)
+                            </td>
+                            <td>
+                                @student.point
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+
+            <ul class="pagination">
+                @if (Model.Students.HasPreviousPage)
+                {
+                    <li class="page-item">
+                        <a class="page-link" href="@Url.Action("Index", new { studentPage = Model.Students.PageNumber - 1, bookPage = Model.Books.PageNumber })">Previous</a>
+                    </li>
+                }
+
+                @if (Model.Students.PageCount <= 7)
+                {
+                    for (int i = 1; i <= Model.Students.PageCount; i++)
+                    {
+                        <li class="page-item @(i == Model.Students.PageNumber ? "active" : "")">
+                            <a class="page-link" href="@Url.Action("Index", new { studentPage = i, bookPage = Model.Books.PageNumber })">@i</a>
+                        </li>
+                    }
+                }
+                else
+                {
+                    int startPage = Math.Max(1, Model.Students.PageNumber - 2);
+                    int endPage = Math.Min(Model.Students.PageCount, Model.Students.PageNumber + 2);
+
+                    if (startPage > 1)
+                    {
+                        <li class="page-item">
+                            <a class="page-link" href="@Url.Action("Index", new { studentPage = 1, bookPage = Model.Books.PageNumber })">1</a>
+                        </li>
+                        <li class="page-item disabled"><span class="page-link">...</span></li>
+                    }
+
+                    for (int i = startPage; i <= endPage; i++)
+                    {
+                        <li class="page-item @(i == Model.Students.PageNumber ? "active" : "")">
+                            <a class="page-link" href="@Url.Action("Index", new { studentPage = i, bookPage = Model.Books.PageNumber })">@i</a>
+                        </li>
+                    }
+
+                    if (endPage < Model.Students.PageCount)
+                    {
+                        <li class="page-item disabled"><span class="page-link">...</span></li>
+                        <li class="page-item">
+                            <a class="page-link" href="@Url.Action("Index", new { studentPage = Model.Students.PageCount, bookPage = Model.Books.PageNumber })">@Model.Students.PageCount</a>
+                        </li>
+                    }
+                }
+
+                @if (Model.Students.HasNextPage)
+                {
+                    <li class="page-item">
+                        <a class="page-link" href="@Url.Action("Index", new { studentPage = Model.Students.PageNumber + 1, bookPage = Model.Books.PageNumber })">Next</a>
+                    </li>
+                }
+            </ul>
+        </div>
+    </div>
+
+    <div class="col-md-6">
+        <div class="section">
+            <div class="row">
+                <div class="col-md-6">
+                    <h2>Books</h2>
+                </div>
+                <div class="col-md-6" style="text-align:right">
+                    <a href="#" class="create-link btn btn-light btn-outline-primary" data-url="@Url.Action("Create", "books")">Create</a>
+                </div>
+            </div>
+                    <table class="table table-striped table-bordered" style="width:100%">
+                        <thead class="bg-primary" style="color:white">
+                            <tr>
+                                <th>
+                                    Name
+                                </th>
+                                <th>
+                                    Page Count
+                                </th>
+                                <th>
+                                    Point
+                                </th>
+                                <th>
+                                    Author
+                                </th>
+                                <th>
+                                    Type
+                                </th>
+                                <th>
+                                    Status
+                                </th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @foreach (var books in Model.Books)
+                            {
+                                <tr>
+                                    <td>
+                                        @books.name
+                                    </td>
+                                    <td>
+                                        @books.pagecount
+                                    </td>
+                                    <td>
+                                        @books.point
+                                    </td>
+                                    <td>
+                                        @books.authors.name
+                                    </td>
+                                    <td>
+                                        @books.types.name
+                                    </td>
+                                    <td>
+                                        @books.BookStatus
+                                    </td>
+                                </tr>
+                            }
+                        </tbody>
+                    </table>
+
+                    <ul class="pagination">
+                        @if (Model.Books.HasPreviousPage)
+                        {
+                            <li class="page-item">
+                                <a class="page-link" href="@Url.Action("Index", new { studentPage = Model.Students.PageNumber, bookPage = Model.Books.PageNumber - 1 })">Previous</a>
+                            </li>
+                        }
+
+                        @if (Model.Books.PageCount <= 7)
+                        {
+                            for (int i = 1; i <= Model.Books.PageCount; i++)
+                            {
+                                <li class="page-item @(i == Model.Books.PageNumber ? "active" : "")">
+                                    <a class="page-link" href="@Url.Action("Index", new { studentPage = Model.Students.PageNumber, bookPage = i })">@i</a>
+                                </li>
+                            }
+                        }
+                        else
+                        {
+                            int startPage = Math.Max(1, Model.Books.PageNumber - 2);
+                            int endPage = Math.Min(Model.Books.PageCount, Model.Books.PageNumber + 2);
+
+                            if (startPage > 1)
+                            {
+                                <li class="page-item">
+                                    <a class="page-link" href="@Url.Action("Index", new { studentPage = Model.Students.PageNumber, bookPage = 1 })">1</a>
+                                </li>
+                                <li class="page-item disabled"><span class="page-link">...</span></li>
+                            }
+
+                            for (int i = startPage; i <= endPage; i++)
+                            {
+                                <li class="page-item @(i == Model.Books.PageNumber ? "active" : "")">
+                                    <a class="page-link" href="@Url.Action("Index", new { studentPage = Model.Students.PageNumber, bookPage = i })">@i</a>
+                                </li>
+                            }
+
+                            if (endPage < Model.Books.PageCount)
+                            {
+                                <li class="page-item disabled"><span class="page-link">...</span></li>
+                                <li class="page-item">
+                                    <a class="page-link" href="@Url.Action("Index", new { studentPage = Model.Students.PageNumber, bookPage = Model.Books.PageCount })">@Model.Books.PageCount</a>
+                                </li>
+                            }
+                        }
+
+                        @if (Model.Books.HasNextPage)
+                        {
+                            <li class="page-item">
+                                <a class="page-link" href="@Url.Action("Index", new { studentPage = Model.Students.PageNumber, bookPage = Model.Books.PageNumber + 1 })">Next</a>
+                            </li>
+                        }
+                    </ul>
+                </div>
+            </div>
+</div>
+
+    <div id="myModal" class="modal fade" tabindex="-1">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body" id="modal-content">
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        $(function () {
+            // Function to handle form submission within the modal
+            $("#modal-content").on("submit", "form", function (e) {
+                e.preventDefault();
+                var form = $(this);
+                var url = form.attr("action");
+                var formData = form.serialize();
+
+                $.post(url, formData, function (data) {
+                    $("#myModal").modal("hide");
+                    location.reload();
+                });
+            });
+
+            // Function to handle other links (details, delete, create) within the modal
+            $(".create-link").click(function (e) {
+                e.preventDefault();
+                var url = $(this).data("url");
+
+                $.get(url, function (data) {
+                    $("#modal-content").empty();
+                    $("#modal-content").html(data);
+                    $("#myModal").modal("show");
+                });
+            });
+        });
+    </script>

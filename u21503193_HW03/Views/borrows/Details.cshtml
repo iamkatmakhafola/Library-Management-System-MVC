@@ -1,0 +1,47 @@
+﻿@model u21503193_HW03.Models.borrows
+
+@{
+    Layout = null;
+}
+
+<div>
+    <h4>Borrows</h4>
+    <hr />
+    <dl class="dl-horizontal">
+        <dt>
+            @Html.DisplayNameFor(model => model.takenDate)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.takenDate)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.broughtDate)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.broughtDate)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.books.name)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.books.name)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.students.name)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.students.name)
+        </dd>
+
+    </dl>
+</div>
+<p>
+    <a href="@Url.Action("Index", "Maintain")" class="btn btn-primary btn-sm">Back to List</a>
+</p>

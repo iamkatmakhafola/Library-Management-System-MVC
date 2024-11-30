@@ -1,0 +1,23 @@
+﻿@model u21503193_HW03.Models.types
+
+@{
+    Layout = null;
+}
+
+<div>
+    <h4>Types</h4>
+    <hr />
+    <dl class="dl-horizontal">
+        <dt>
+            @Html.DisplayNameFor(model => model.name)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.name)
+        </dd>
+
+    </dl>
+</div>
+<p>
+    <a href="@Url.Action("Index", "Maintain")" class="btn btn-primary btn-sm">Back to List</a>
+</p>
